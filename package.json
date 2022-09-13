@@ -1,0 +1,28 @@
+{
+  "name": "project-1-group66-blog",
+  "version": "1.0.0",
+  "description": "Blog Management Project 1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asifrazaansari/Project-1-Group66-Blog.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asifrazaansari/Project-1-Group66-Blog/issues"
+  },
+  "homepage": "https://github.com/asifrazaansari/Project-1-Group66-Blog#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.2",
+    "email-validator": "^2.0.4",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.4"
+  }
+}
