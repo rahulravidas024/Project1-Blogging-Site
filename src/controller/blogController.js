@@ -1,6 +1,8 @@
 const blogModel = require('../models/blogModel')
 const authorModel = require('../models/authorModel')
 const mongoose = require('mongoose')
+
+const isValidName = new RegExp(/^[A-Za-z][A-Za-z\'\-]+([\ A-Za-z][A-Za-z\'\-]+)*/)
 const isValidObjectId = (ObjectId) => {
     return mongoose.Types.ObjectId.isValid(ObjectId)
 }
@@ -34,12 +36,12 @@ const createBlogs = async function (req, res) {
         else {
             const { title, authorId, body, subcategory, category, tags } = bodyData
 
-            if (!isValidObjectId(authorId)) return res.status(400).send({ status: false, data: "please enter valid authorId" })
-
             if (!stringChecking(title)) return res.status(400).send({ status: false, data: "title  must be present and have Non empty string " })
 
             if (!stringChecking(body)) return res.status(400).send({ status: false, data: " body must be present and have Non empty string " })
-
+            
+            if (!isValidObjectId(authorId)) return res.status(400).send({ status: false, data: "please enter valid authorId" })
+            
             if (!arrayOfStringChecking(category)) return res.status(400).send({ status: false, data: "category must be present and have Non empty string " })
 
             if (subcategory) {
@@ -49,8 +51,8 @@ const createBlogs = async function (req, res) {
                 if (!arrayOfStringChecking(tags)) return res.status(400).send({ status: false, data: "tags must be present and have Non empty string " })
             }
 
-            let checkauthorId = await authorModel.findById(authorId)
-            if (checkauthorId.length === null) {
+            let checkauthorId = await authorModel.findOne({authorId : authorId})
+            if (!checkauthorId) {
                 return res.status(404).send({ status: false, data: "Author ID not Found.....please Enter valid Author ID" })
             }
             else {
@@ -163,7 +165,7 @@ const deleteBlog = async function (req, res) {
         const blogId = req.params.blogId;
 
         const checkblog = await blogModel.findById(blogId);
-        if (checkblog === null || checkblog.isDeleted == true) {
+        if (!checkblog || checkblog.isDeleted == true) {
             return res.status(400).send({ status: false, data: "Blog already deleted" });
         } else {
             await blogModel.findByIdAndUpdate(blogId, {
@@ -210,6 +212,7 @@ const deleteByQuery = async function (req, res) {
         filter.isPublished = false
         if (subcategory || category || tags || authorId) {
             const blog = await blogModel.find(filter)
+            console.log(blog)
             for (let i = 0; i < blog.length; i++) {
                 if (((blog[i].authorId.toString())) !== tokenAuthorId) {
                     return res.status(403).send({ status: false, data: "The blogs with this filters are forbidden for this logged in user" })

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const authorModel = require("../models/authorModel")
 const isvalidEmail = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 const isValidPassword = new RegExp(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/)
+const isValidName = new RegExp(/^[A-Za-z][A-Za-z\'\-]+([\ A-Za-z][A-Za-z\'\-]+)*/)
 const stringChecking = function (data) {
     if (typeof data !== 'string') {
         return false;
@@ -22,8 +23,10 @@ const createAuthor = async function (req, res) {
         const { fname, lname, title, email, password } = data
 
         if (!stringChecking(fname)) return res.status(400).send({ status: false, data: "fname must be present and have non empty string " })
-
+        if(!isValidName.test(fname)) return res.status(400).send({ status: false, data: "only alphabet are allowed in fname" })
+        
         if (!stringChecking(lname)) return res.status(400).send({ status: false, data: "lname must be present and have non empty string " })
+        if(!isValidName.test(lname)) return res.status(400).send({ status: false, data: "only alphabet are allowed in lname" })
 
         if (!isvalidEmail.test(email)) return res.status(400).send({ status: false, data: "please enter non empty valid email" })
 
